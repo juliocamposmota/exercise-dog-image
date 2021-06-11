@@ -15,23 +15,6 @@ class App extends Component {
     this.fetchDog = this.fetchDog.bind(this);
   }
 
-  async fetchDog() {
-    this.setState(
-      { loading: true },
-      async () => {
-        const requestHeaders = { headers: { Accept: 'aplication/json' } }
-        const requestReturn = await fetch('https://dog.ceo/api/breeds/image/random', requestHeaders);
-        const requestObject = await requestReturn.json();
-        const result = await requestObject.message;
-    
-        this.setState({
-          loading: false,
-          dogImage: result,
-        });
-      }
-    );
-  }
-
   componentDidMount() {
     this.fetchDog();
   }
@@ -40,7 +23,29 @@ class App extends Component {
     const forbidenDog = 'terrier';
     return !dogImage.includes(forbidenDog);
   }
-  
+
+  componentDidUpdate() {
+    const { dogImage } = this.state;
+    localStorage.setItem('dogUrl', dogImage);
+  }
+
+  async fetchDog() {
+    this.setState(
+      { loading: true },
+      async () => {
+        const requestHeaders = { headers: { Accept: 'aplication/json' } }
+        const requestReturn = await fetch('https://dog.ceo/api/breeds/image/random', requestHeaders);
+        const requestObject = await requestReturn.json();
+        const result = await requestObject.message;
+
+        this.setState({
+          loading: false,
+          dogImage: result,
+        });
+      }
+    );
+  }
+
   render() {
     const { loading, dogImage } = this.state;
 

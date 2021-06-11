@@ -9,7 +9,7 @@ class App extends Component {
 
     this.state = {
       loading: true,
-      dogImage: {},
+      dogImage: '',
     }
 
     this.fetchDog = this.fetchDog.bind(this);
@@ -22,7 +22,7 @@ class App extends Component {
         const requestHeaders = { headers: { Accept: 'aplication/json' } }
         const requestReturn = await fetch('https://dog.ceo/api/breeds/image/random', requestHeaders);
         const requestObject = await requestReturn.json();
-        const result = requestObject.message;
+        const result = await requestObject.message;
     
         this.setState({
           loading: false,
@@ -36,6 +36,11 @@ class App extends Component {
     this.fetchDog();
   }
 
+  shouldComponentUpdate(_nextProps, { dogImage }) {
+    const forbidenDog = 'terrier';
+    return !dogImage.includes(forbidenDog);
+  }
+  
   render() {
     const { loading, dogImage } = this.state;
 

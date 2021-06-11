@@ -1,10 +1,49 @@
 import React, { Component } from 'react';
+import DogImage from './components/DogImage';
+import Loading from './components/Loading';
+import './App.css';
 
 class App extends Component {
+  constructor() {
+    super()
+
+    this.state = {
+      loading: true,
+      dogImage: {},
+    }
+
+    this.fetchDog = this.fetchDog.bind(this);
+  }
+
+  async fetchDog() {
+    this.setState(
+      { loading: true },
+      async () => {
+        const requestHeaders = { headers: { Accept: 'aplication/json' } }
+        const requestReturn = await fetch('https://dog.ceo/api/breeds/image/random', requestHeaders);
+        const requestObject = await requestReturn.json();
+        const result = requestObject.message;
+    
+        this.setState({
+          loading: false,
+          dogImage: result,
+        });
+      }
+    );
+  }
+
+  componentDidMount() {
+    this.fetchDog();
+  }
+
   render() {
+    const { loading, dogImage } = this.state;
+
     return (
       <div>
-        My Dogo image Appg
+        { loading ? <Loading /> : <DogImage dogImage={dogImage} /> }
+
+        <button type="button" onClick={ this.fetchDog }>Outro doguinho</button>
       </div>
     );
   }
